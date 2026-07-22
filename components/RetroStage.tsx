@@ -1,27 +1,48 @@
 import Image from "next/image";
-import { MarqueeBulbs } from "./MarqueeBulbs";
+import { DoorLights } from "./DoorLights";
 
 export function RetroStage({
   children,
-  label = "Designs Direct Live Price Game"
+  label = "The Price Is Right"
 }: {
   children: React.ReactNode;
   label?: string;
 }) {
   return (
-    <main className="stage-shell">
-      <div className="stage-inner">
-        <header className="stage-header">
-          <div className="stage-brand">
-            <Image src="/brand/designs-direct-logo.png" width={184} height={94} alt="Designs Direct" priority />
-            <div>
-              <div>{label}</div>
-              <div className="stage-kicker">Paid-price edition</div>
+    <main className="tpir-door">
+      <div className="door-ring ring-green">
+        <div className="door-ring ring-pink">
+          <div className="door-ring ring-maroon">
+            <DoorLights />
+            <div className="door-ring ring-blue">
+              <div className="door-ring ring-yellow">
+                <div className="door-ring ring-orange">
+                  <div className="door-center">
+                    <header className="tpir-header">
+                      <Image
+                        src="/ui/tpir-logo.svg"
+                        width={140}
+                        height={87}
+                        alt="The Price Is Right"
+                        className="tpir-header-logo"
+                        priority
+                      />
+                      <span className="tpir-session-chip">{label}</span>
+                      <Image
+                        src="/brand/designs-direct-logo.png"
+                        width={92}
+                        height={47}
+                        alt="Designs Direct"
+                        className="tpir-header-dd"
+                      />
+                    </header>
+                    <div className="stage-main">{children}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <MarqueeBulbs />
-        </header>
-        <div className="stage-main">{children}</div>
+        </div>
       </div>
     </main>
   );

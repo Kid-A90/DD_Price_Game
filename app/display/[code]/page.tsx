@@ -100,9 +100,9 @@ export default function DisplayPage() {
         <section className="stage-panel display-board">
           <MarqueeBulbs count={24} animating />
           <h1 className="page-title" style={{ marginTop: "1.5rem" }}>
-            Designs Direct Live Price Game
+            The Price Is Right
           </h1>
-          <p className="page-lead">The game starts soon. Welcome!</p>
+          <p className="page-lead">The game starts soon. Come on down!</p>
           {pub && (
             <div className="team-bay-strip">
               {pub.teamStatuses.map((t) => (

@@ -8,12 +8,12 @@ export default function HomePage() {
       <section className="stage-panel">
         <div className="hero-grid">
           <div>
-            <h1 className="hero-title">The Price <span>Game</span></h1>
+            <h1 className="hero-title">The Price <span>Is Right</span></h1>
             <p className="hero-copy">
               A live four-team pricing game. Team laptops submit paid-price guesses, the projector follows the action, and the admin controls pace without entering routine scores.
             </p>
           </div>
-          <Image className="hero-sign" src="/ui/dd-price-game-lockup.svg" alt="Designs Direct Price Game" width={1200} height={620} priority />
+          <Image className="hero-sign" src="/ui/tpir-logo.svg" alt="The Price Is Right" width={1000} height={620} priority />
         </div>
         <div className="route-grid">
           <RouteCard href="/join" className="team" title="Team Laptop">Choose a team color, add names, and enter guesses.</RouteCard>

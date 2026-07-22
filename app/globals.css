@@ -789,3 +789,115 @@ a { color: inherit; text-decoration: none; }
   .team-bay-cell:nth-child(even) { border-right: none; }
   .burst-bg { width: 220px; height: 220px; }
 }
+
+/* ══ THE BIG DOOR — 1972 concentric-ring stage frame ═══════════════════════
+   green → pink → maroon (chasing bulbs) → blue → chartreuse → orange → white */
+:root {
+  --door-green: #14d40a;
+  --door-pink: #ff5fb0;
+  --door-maroon: #8f1010;
+  --door-blue: #1e90ff;
+  --door-chartreuse: #dfe021;
+  --door-orange: #ff8c00;
+  --door-white: #fffdf2;
+  --thin-ring: clamp(7px, 1vw, 14px);
+  --maroon-pad: clamp(24px, 3vw, 40px);
+  --door-dot: clamp(8px, 1.1vw, 12px);
+}
+
+.tpir-door {
+  min-height: 100vh;
+  padding: clamp(10px, 1.6vw, 24px);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.06), transparent 60%),
+    #2e2e2e;
+  display: flex;
+}
+.door-ring { flex: 1; display: flex; min-width: 0; }
+.ring-green {
+  background: var(--door-green);
+  border-radius: 58px;
+  padding: clamp(10px, 1.6vw, 22px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.55);
+}
+.ring-pink   { background: var(--door-pink);       border-radius: 46px; padding: var(--thin-ring); }
+.ring-maroon { background: var(--door-maroon);     border-radius: 38px; padding: var(--maroon-pad); position: relative; }
+.ring-blue   { background: var(--door-blue);       border-radius: 28px; padding: var(--thin-ring); }
+.ring-yellow { background: var(--door-chartreuse); border-radius: 22px; padding: var(--thin-ring); }
+.ring-orange { background: var(--door-orange);     border-radius: 17px; padding: var(--thin-ring); }
+.door-center {
+  background: var(--door-white);
+  border-radius: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Chasing bulbs on the maroon band */
+.door-lights {
+  position: absolute;
+  inset: calc((var(--maroon-pad) - var(--door-dot)) / 2);
+  pointer-events: none;
+  z-index: 3;
+}
+.door-dot {
+  position: absolute;
+  width: var(--door-dot);
+  height: var(--door-dot);
+  border-radius: 50%;
+  background: #6b3535;
+  animation: door-chase .9s steps(1, end) infinite;
+}
+@keyframes door-chase {
+  0%, 32% {
+    background: #fffbe0;
+    box-shadow: 0 0 12px 4px rgba(255,248,190,.95), 0 0 3px 1px #fff;
+  }
+  33%, 100% {
+    background: #6b3535;
+    box-shadow: none;
+  }
+}
+
+/* Header inside the white door center */
+.tpir-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px clamp(14px, 2.5vw, 28px);
+  border-bottom: 5px solid var(--show-black);
+  background: var(--door-white);
+}
+.tpir-header-logo { height: clamp(48px, 6vw, 72px); width: auto; }
+.tpir-session-chip {
+  margin-left: auto;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(15px, 1.8vw, 22px);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--show-yellow);
+  border: 4px solid var(--show-black);
+  border-radius: 12px;
+  padding: 6px 16px;
+  box-shadow: 4px 4px 0 var(--show-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
+}
+.tpir-header-dd { height: clamp(28px, 3.4vw, 42px); width: auto; }
+
+@media (max-width: 700px) {
+  :root { --maroon-pad: 18px; --thin-ring: 5px; --door-dot: 6px; }
+  .tpir-door { padding: 6px; }
+  .ring-green { padding: 8px; border-radius: 34px; }
+  .ring-pink { border-radius: 28px; }
+  .ring-maroon { border-radius: 24px; }
+  .ring-blue { border-radius: 18px; }
+  .ring-yellow { border-radius: 14px; }
+  .ring-orange { border-radius: 11px; }
+  .door-center { border-radius: 8px; }
+  .tpir-header-dd { display: none; }
+}

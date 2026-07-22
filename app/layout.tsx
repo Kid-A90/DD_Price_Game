@@ -10,7 +10,7 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "Designs Direct Live Price Game",
+  title: "The Price Is Right — Designs Direct",
   description: "Live team pricing game for Designs Direct."
 };
 
