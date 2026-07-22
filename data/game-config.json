@@ -1,0 +1,92 @@
+{
+  "projectName": "Designs Direct Live Price Game",
+  "hosting": "Vercel",
+  "realtimeBackend": "Supabase",
+  "teamCount": 4,
+  "playersPerTeamMax": 5,
+  "teamColors": [
+    {
+      "id": "red",
+      "label": "Red Team",
+      "hex": "#E52B2F"
+    },
+    {
+      "id": "blue",
+      "label": "Blue Team",
+      "hex": "#1759D8"
+    },
+    {
+      "id": "yellow",
+      "label": "Yellow Team",
+      "hex": "#FFD13A"
+    },
+    {
+      "id": "green",
+      "label": "Green Team",
+      "hex": "#37A63B"
+    }
+  ],
+  "priceRule": {
+    "answerField": "gamePricePaid",
+    "definition": "The exact amount paid for the item, excluding sales tax unless the admin explicitly chooses otherwise.",
+    "regularRetailNeverUsedForScoring": true,
+    "retailerNeverShown": true,
+    "priceHiddenUntilReveal": true
+  },
+  "routes": {
+    "join": "/join",
+    "team": "/team/[code]",
+    "display": "/display/[code]",
+    "admin": "/admin/[code]"
+  },
+  "rounds": [
+    {
+      "id": "warmup",
+      "name": "Everyday Warm-Up",
+      "targetQuestions": 5,
+      "timerSeconds": 20
+    },
+    {
+      "id": "main",
+      "name": "Home Decor Main Game",
+      "targetQuestions": 12,
+      "timerSeconds": 30
+    },
+    {
+      "id": "showcase",
+      "name": "Final Showcase",
+      "targetQuestions": 3,
+      "timerSeconds": 45
+    }
+  ],
+  "scoring": {
+    "closestWithoutGoingOver": 3,
+    "secondClosestWithoutGoingOver": 1,
+    "exactPaidPriceBonus": 1,
+    "allTeamsOverClosestOverall": 1,
+    "noSubmission": 0
+  },
+  "tieBreaker": {
+    "trigger": "Only when equal retail guesses affect a point-bearing position",
+    "publicLabel": "Average Cost Guess",
+    "adminDataField": "benchmarkCost",
+    "eligibleTeamsOnly": true,
+    "timerSeconds": 20,
+    "normalQuestionsNeverShowTieInput": true,
+    "routineBonusPoints": false,
+    "stillTiedFallback": "Admin chooses equal points or a sudden-death backup item"
+  },
+  "timer": {
+    "serverAuthoritativeDeadline": true,
+    "draftSavedToServer": true,
+    "atZero": "Finalize the last valid draft saved before the deadline",
+    "blankAtZero": "No submission",
+    "adminCanForceClose": true
+  },
+  "privacy": {
+    "privateSourceImagesOutsidePublicFolder": true,
+    "receiptsOutsidePublicFolder": true,
+    "approvedCleanImagesOnlyInPublic": true,
+    "publicStateNeverContainsUnrevealedAnswers": true
+  }
+}

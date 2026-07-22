@@ -1,0 +1,42 @@
+[
+  {
+    "id": "W001",
+    "publicName": "Carton of Eggs",
+    "category": "Everyday Warm-Up",
+    "publicImage": "/placeholders/everyday/eggs.svg",
+    "readyForGame": false,
+    "notes": "Replace with tomorrow's exact purchased item photo and paid price."
+  },
+  {
+    "id": "W002",
+    "publicName": "Gallon of Milk",
+    "category": "Everyday Warm-Up",
+    "publicImage": "/placeholders/everyday/milk.svg",
+    "readyForGame": false,
+    "notes": "Replace with tomorrow's exact purchased item photo and paid price."
+  },
+  {
+    "id": "W003",
+    "publicName": "Grande Matcha Latte",
+    "category": "Everyday Warm-Up",
+    "publicImage": "/placeholders/everyday/matcha.svg",
+    "readyForGame": false,
+    "notes": "Use the exact paid total for the purchased drink; store name remains admin-only."
+  },
+  {
+    "id": "W004",
+    "publicName": "Loaf of Sandwich Bread",
+    "category": "Everyday Warm-Up",
+    "publicImage": "/placeholders/everyday/bread.svg",
+    "readyForGame": false,
+    "notes": "Suggested fourth fixed-unit warm-up item."
+  },
+  {
+    "id": "W005",
+    "publicName": "Box of Breakfast Cereal",
+    "category": "Everyday Warm-Up",
+    "publicImage": "/placeholders/everyday/cereal.svg",
+    "readyForGame": false,
+    "notes": "Suggested fifth fixed-unit warm-up item."
+  }
+]

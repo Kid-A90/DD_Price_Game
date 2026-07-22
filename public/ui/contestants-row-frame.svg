@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" role="img" aria-label="Original four-team contestant row frame">
+  <defs><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="0" flood-color="#111"/></filter></defs>
+  <rect x="25" y="30" width="1350" height="420" rx="42" fill="#4db936" stroke="#111" stroke-width="16" filter="url(#s)"/>
+  <rect x="55" y="60" width="1290" height="80" rx="20" fill="#f6df78" stroke="#111" stroke-width="10"/>
+  <g fill="#fff5a1" stroke="#111" stroke-width="5">
+    <circle cx="95" cy="100" r="16"/><circle cx="145" cy="100" r="16"/><circle cx="195" cy="100" r="16"/><circle cx="245" cy="100" r="16"/><circle cx="295" cy="100" r="16"/>
+    <circle cx="1105" cy="100" r="16"/><circle cx="1155" cy="100" r="16"/><circle cx="1205" cy="100" r="16"/><circle cx="1255" cy="100" r="16"/><circle cx="1305" cy="100" r="16"/>
+  </g>
+  <g stroke="#111" stroke-width="12">
+    <rect x="75" y="175" width="285" height="210" rx="18" fill="#e52b2f"/>
+    <rect x="400" y="175" width="285" height="210" rx="18" fill="#1759d8"/>
+    <rect x="725" y="175" width="285" height="210" rx="18" fill="#ffd13a"/>
+    <rect x="1050" y="175" width="285" height="210" rx="18" fill="#37a63b"/>
+  </g>
+</svg>

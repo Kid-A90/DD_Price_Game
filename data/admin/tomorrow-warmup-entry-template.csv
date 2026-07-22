@@ -1,0 +1,6 @@
+id,publicName,category,gamePricePaid,benchmarkCost,privateRetailer,receiptLineOrSku,sourcePhotoFilename,approvedPublicImageFilename,priceStatus,imageStatus,readyForGame,notesPrivate
+W001,Carton of Eggs,Everyday Warm-Up,,,,,,,needs_paid_price_confirmation,needs_exact_product_cleanup,false,Photograph the exact purchased carton and record the exact pre-tax line price.
+W002,Gallon of Milk,Everyday Warm-Up,,,,,,,needs_paid_price_confirmation,needs_exact_product_cleanup,false,Photograph the exact purchased gallon and record the exact pre-tax line price.
+W003,Grande Matcha Latte,Everyday Warm-Up,,,,,,,needs_paid_price_confirmation,needs_exact_product_cleanup,false,Keep the coffee-shop name private and remove branded store clues from the public image.
+W004,Loaf of Sandwich Bread,Everyday Warm-Up,,,,,,,needs_paid_price_confirmation,needs_exact_product_cleanup,false,Use one exact loaf/package and its exact pre-tax line price.
+W005,Box of Breakfast Cereal,Everyday Warm-Up,,,,,,,needs_paid_price_confirmation,needs_exact_product_cleanup,false,Use one exact box and its exact pre-tax line price.

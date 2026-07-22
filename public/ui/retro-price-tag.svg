@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-label="Original retro price tag frame">
+  <defs>
+    <linearGradient id="tag" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#37e8e8"/><stop offset="1" stop-color="#16bfc8"/></linearGradient>
+  </defs>
+  <path d="M96 46h685q72 0 72 72v184q0 72-72 72H96L22 210Z" fill="#1b32e8" stroke="#111" stroke-width="16"/>
+  <path d="M128 82h622q55 0 55 55v146q0 55-55 55H128L62 210Z" fill="url(#tag)" stroke="#111" stroke-width="10"/>
+  <circle cx="132" cy="210" r="24" fill="#111"/>
+  <rect x="205" y="142" width="500" height="136" rx="26" fill="#fff7c9" stroke="#111" stroke-width="9"/>
+</svg>

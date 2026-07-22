@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 720" role="img" aria-label="Original retro showcase podium frame">
+  <path d="M120 60h660l70 125-65 485H115L50 185Z" fill="#f7e6a6" stroke="#111" stroke-width="16"/>
+  <path d="M120 90h660l36 78H84Z" fill="#f36c21" stroke="#111" stroke-width="12"/>
+  <text x="450" y="153" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="64" fill="#fff" stroke="#111" stroke-width="4" paint-order="stroke">SHOWCASE</text>
+  <path d="M100 205h700l-22 210H122Z" fill="#101010" stroke="#111" stroke-width="8"/>
+  <rect x="150" y="245" width="600" height="120" rx="18" fill="#222" stroke="#f7e6a6" stroke-width="8"/>
+  <g fill="#f6dfa0">
+    <circle cx="190" cy="305" r="7"/><circle cx="216" cy="305" r="7"/><circle cx="242" cy="305" r="7"/>
+    <circle cx="658" cy="305" r="7"/><circle cx="684" cy="305" r="7"/><circle cx="710" cy="305" r="7"/>
+  </g>
+  <path d="M130 445h640l-42 180H172Z" fill="#8e159c" stroke="#111" stroke-width="12"/>
+  <path d="M295 585c0-85 55-140 155-140s155 55 155 140" fill="none" stroke="#f7e6a6" stroke-width="18"/>
+</svg>

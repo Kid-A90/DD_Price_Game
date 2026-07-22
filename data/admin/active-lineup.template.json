@@ -1,0 +1,10 @@
+{
+  "sessionTitle": "Designs Direct Live Price Game",
+  "questions": [],
+  "instructions": [
+    "Add only products with priceStatus confirmed_paid_price.",
+    "Require gamePricePaid and an approved public image.",
+    "Never place retailer or receipt fields in a public question snapshot.",
+    "Warm-up placeholders may remain inactive until tomorrow's purchases are confirmed."
+  ]
+}

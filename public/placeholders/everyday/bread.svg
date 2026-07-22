@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Loaf of sandwich bread placeholder">
+ <rect width="640" height="480" rx="36" fill="#ffd89e"/><path d="M135 190q0-100 95-100h180q95 0 95 100v170H135Z" fill="#c98435" stroke="#111" stroke-width="12"/><path d="M170 195q0-72 72-72h156q72 0 72 72v135H170Z" fill="#f3bd68"/><path d="M218 148v145M320 125v168M422 148v145" stroke="#d99740" stroke-width="12"/><text x="320" y="440" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="42">SANDWICH BREAD</text>
+</svg>

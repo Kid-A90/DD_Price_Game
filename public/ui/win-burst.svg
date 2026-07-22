@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="t">
+  <title id="t">Original win starburst</title>
+  <path d="M20 260 122 194 82 92l126 31 48-108 96 77 79-86 62 111 105-56 18 122 127-5-35 118 116 47-89 88 72 98-123 21-5 127-111-62-87 89-49-118-121 38 5-126-118-22 57-106-95-73 105-63Z" fill="#f22" stroke="#111" stroke-width="16"/>
+  <path d="M120 260 210 207l-26-75 91 26 46-78 69 58 70-64 48 82 86-39 19 91 94 2-37 84 79 51-76 62 50 79-92 14-17 93-79-50-62 72-50-82-87 35-14-92-93-10 42-84-74-56Z" fill="#ffe500" stroke="#111" stroke-width="10"/>
+  <text x="500" y="340" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="190" font-weight="900" fill="#ef1b1b" stroke="#111" stroke-width="5" paint-order="stroke">WIN!</text>
+</svg>

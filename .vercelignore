@@ -1,0 +1,5 @@
+private
+archive
+**/*.private.json
+**/*.private.csv
+design/REFERENCE_BOARD.html

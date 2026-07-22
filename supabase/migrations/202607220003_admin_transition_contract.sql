@@ -1,0 +1,47 @@
+-- Admin transition contract.
+-- Claude should complete these as idempotent security-definer functions and test each path.
+-- The TypeScript scoring reference is in lib/game/scoring.ts.
+
+-- Required RPCs:
+-- 1. admin_open_question(session_id, question_id, duration_seconds)
+--    - verify auth.uid() is game_sessions.admin_user_id
+--    - lock session row and require phase question_ready or leaderboard
+--    - set question.opened_at and deadline_at = clock_timestamp() + duration
+--    - clear public reveal fields
+--    - publish only safe product name/image/deadline to session_public_state
+--
+-- 2. admin_close_question(session_id)
+--    - verify admin and expected state_version
+--    - finalize each team's last valid retail_draft saved at or before deadline_at
+--    - blank draft becomes no_submission
+--    - build the score plan from the exact paid-price answer
+--    - if equal retail guesses affect first, second, or all-over points:
+--        * mark only those submissions tie_eligible
+--        * set phase tie_break_open
+--        * do not reveal the answer
+--      otherwise:
+--        * write idempotent score_events
+--        * update team totals
+--        * set phase question_locked
+--
+-- 3. admin_close_tie_break(session_id)
+--    - resolve each pending tie group by absolute distance to benchmark_cost
+--    - no routine benchmark bonus points
+--    - if still tied, return an explicit unresolved result for equal-points or sudden-death choice
+--    - write idempotent score_events and update totals
+--
+-- 4. admin_reveal_question(session_id)
+--    - require all scoring/ties resolved
+--    - copy answer_paid_price into session_public_state.reveal_paid_price
+--    - publish point awards and animation cue
+--    - set phase reveal
+--
+-- 5. admin_advance(session_id)
+--    - clear reveal fields and load the next ready question
+--    - increment state_version atomically
+--
+-- 6. admin_correct_score(session_id, team_id, delta, reason)
+--    - emergency only
+--    - append an audit record and idempotent score event
+--
+-- Never calculate authoritative scores in the browser.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Original rounded mechanical number board">
+  <path d="M170 30h460q120 0 120 120v700q0 120-120 120H170Q50 970 50 850V150Q50 30 170 30Z" fill="#f2bd42" stroke="#111" stroke-width="18"/>
+  <path d="M130 85h540q45 0 45 45v740q0 45-45 45H130q-45 0-45-45V130q0-45 45-45Z" fill="#f5e2b5" stroke="#e86b4b" stroke-width="18"/>
+  <g stroke="#e86b4b" stroke-width="12" fill="#ffd37a">
+    <rect x="120" y="160" width="560" height="190" rx="26"/>
+    <rect x="120" y="405" width="560" height="190" rx="26"/>
+    <rect x="120" y="650" width="560" height="190" rx="26"/>
+  </g>
+  <g fill="#222" stroke="#111" stroke-width="5">
+    <rect x="300" y="205" width="78" height="100" rx="8"/><rect x="390" y="205" width="78" height="100" rx="8"/><rect x="480" y="205" width="78" height="100" rx="8"/>
+    <rect x="300" y="450" width="78" height="100" rx="8"/><rect x="390" y="450" width="78" height="100" rx="8"/><rect x="480" y="450" width="78" height="100" rx="8"/>
+    <rect x="300" y="695" width="78" height="100" rx="8"/><rect x="390" y="695" width="78" height="100" rx="8"/><rect x="480" y="695" width="78" height="100" rx="8"/>
+  </g>
+  <g font-family="Arial Black, sans-serif" font-size="48" font-weight="900" fill="#4b2d1e">
+    <text x="155" y="275">ITEM</text><text x="155" y="520">COST</text><text x="155" y="765">TIE</text>
+  </g>
+</svg>

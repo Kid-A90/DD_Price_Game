@@ -1,0 +1,1 @@
+Run public-safety validation, unit tests, lint, and production build. Then test four team sessions, one display, and one admin session. Report any data leak, race condition, stale timer, duplicate claim, or scoring mismatch before declaring the app ready.
