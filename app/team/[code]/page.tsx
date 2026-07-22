@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
+import { WinBurst } from "@/components/WinBurst";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { playCue } from "@/lib/sound/synth";
@@ -116,7 +117,8 @@ export default function TeamPage() {
       playCue("lock");
     }
     if (pub.phase === "reveal") {
-      playCue("reveal");
+      const hasPoints = pub.pointAwards?.some((a) => a.color === team?.color && a.points > 0);
+      playCue(hasPoints ? "winner" : "reveal");
     }
   }, [pub?.phase]);
 
@@ -276,14 +278,18 @@ export default function TeamPage() {
       {phase === "question_open" && pub && (
         <section className="stage-panel product-stage">
           {pub.publicImagePath && (
-            <div className="product-window">
-              <Image
-                src={pub.publicImagePath}
-                fill
-                style={{ objectFit: "contain" }}
-                alt={pub.productName ?? "Product"}
-                priority
-              />
+            <div className="product-pedestal">
+              <div className="product-window">
+                <Image
+                  src={pub.publicImagePath}
+                  fill
+                  style={{ objectFit: "contain" }}
+                  alt={pub.productName ?? "Product"}
+                  priority
+                />
+              </div>
+              <div className="product-pedestal-cap" />
+              <div className="product-pedestal-base" />
             </div>
           )}
           <h2 className="product-name">{pub.productName}</h2>
@@ -386,28 +392,36 @@ export default function TeamPage() {
       )}
 
       {/* ── REVEAL ── */}
-      {phase === "reveal" && pub && (
-        <section className="stage-panel reveal-stage" style={{ textAlign: "center" }}>
-          <h2 className="page-title">The Price Is…</h2>
-          {pub.revealPaidPrice !== null && (
-            <div className="reveal-price">
-              ${Number(pub.revealPaidPrice).toFixed(2)}
-            </div>
-          )}
-          {pub.pointAwards && (
-            <div className="awards-list">
-              {pub.pointAwards
-                .filter((a) => a.color === team.color)
-                .map((a, i) => (
+      {phase === "reveal" && pub && (() => {
+        const myAwards = pub.pointAwards?.filter((a) => a.color === team.color) ?? [];
+        const iWon = myAwards.some((a) => a.points > 0);
+        return (
+          <section className="stage-panel" style={{ textAlign: "center" }}>
+            <h2 className="page-title">The Price Is…</h2>
+            {pub.revealPaidPrice !== null && (
+              <div className="burst-container">
+                <WinBurst visible={iWon} />
+                <div className="reveal-price">
+                  ${Number(pub.revealPaidPrice).toFixed(2)}
+                </div>
+              </div>
+            )}
+            {myAwards.length > 0 && (
+              <div className="awards-list">
+                {myAwards.map((a, i) => (
                   <div key={i} className="award-row">
                     <span className="award-pts">+{a.points}</span>
                     <span className="award-reason">{a.reason.replace(/_/g, " ")}</span>
                   </div>
                 ))}
-            </div>
-          )}
-        </section>
-      )}
+              </div>
+            )}
+            {myAwards.length === 0 && (
+              <p className="page-lead" style={{ opacity: .7, marginTop: "1rem" }}>No points this round.</p>
+            )}
+          </section>
+        );
+      })()}
 
       {/* ── LEADERBOARD ── */}
       {phase === "leaderboard" && pub && (

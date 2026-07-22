@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
+import { WinBurst } from "@/components/WinBurst";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { playCue } from "@/lib/sound/synth";
 import type { PublicState, TeamColor } from "@/lib/supabase/types";
@@ -103,15 +104,18 @@ export default function DisplayPage() {
           </h1>
           <p className="page-lead">The game starts soon. Welcome!</p>
           {pub && (
-            <div className="team-status-row">
+            <div className="team-bay-strip">
               {pub.teamStatuses.map((t) => (
                 <div key={t.color}
-                  className={`team-status-card ${t.claimed ? "active" : "empty"}`}
+                  className={`team-bay-cell${t.claimed ? "" : " empty"}`}
                   style={{ "--bay-color": COLOR_HEX[t.color] } as React.CSSProperties}>
-                  <span className="bay-dot" />
-                  <span className="ts-name">{t.claimed ? t.displayName : "—"}</span>
-                  {t.claimed && (
-                    <span className="ts-players">{t.playerNames.slice(0, 3).join(", ")}</span>
+                  <span className={`tbc-name${t.color === "yellow" ? " yellow" : ""}`}>
+                    {t.claimed ? t.displayName : "—"}
+                  </span>
+                  {t.claimed && t.playerNames.length > 0 && (
+                    <span className={`tbc-players${t.color === "yellow" ? " yellow" : ""}`}>
+                      {t.playerNames.slice(0, 3).join(" · ")}
+                    </span>
                   )}
                 </div>
               ))}
@@ -133,14 +137,18 @@ export default function DisplayPage() {
       {phase === "question_open" && pub && (
         <section className="stage-panel display-board">
           {pub.publicImagePath && (
-            <div className="display-product-window">
-              <Image
-                src={pub.publicImagePath}
-                fill
-                style={{ objectFit: "contain" }}
-                alt={pub.productName ?? "Product"}
-                priority
-              />
+            <div className="product-pedestal">
+              <div className="display-product-window">
+                <Image
+                  src={pub.publicImagePath}
+                  fill
+                  style={{ objectFit: "contain" }}
+                  alt={pub.productName ?? "Product"}
+                  priority
+                />
+              </div>
+              <div className="product-pedestal-cap" />
+              <div className="product-pedestal-base" />
             </div>
           )}
           <h1 className="display-product-name">{pub.productName}</h1>
@@ -149,15 +157,18 @@ export default function DisplayPage() {
             {secondsLeft !== null ? `${secondsLeft}s` : "PAUSED"}
           </div>
 
-          {/* Team status badges — no guess values shown */}
-          <div className="team-status-row">
+          {/* Team status bays — no guess values shown */}
+          <div className="team-bay-strip">
             {pub.teamStatuses.map((t) => (
               <div key={t.color}
-                className={`team-status-card status-${t.status}`}
+                className={`team-bay-cell${t.claimed ? "" : " empty"}`}
                 style={{ "--bay-color": COLOR_HEX[t.color] } as React.CSSProperties}>
-                <span className="bay-dot" />
-                <span className="ts-name">{t.displayName}</span>
-                <span className="ts-status">{statusLabel(t.status)}</span>
+                <span className={`tbc-name${t.color === "yellow" ? " yellow" : ""}`}>
+                  {t.displayName}
+                </span>
+                <span className={`tbc-status${t.color === "yellow" ? " yellow" : ""}`}>
+                  {statusLabel(t.status)}
+                </span>
               </div>
             ))}
           </div>
@@ -169,14 +180,17 @@ export default function DisplayPage() {
         <section className="stage-panel display-board" style={{ textAlign: "center" }}>
           <h1 className="page-title">All In!</h1>
           <p className="page-lead">Guesses locked. Preparing reveal…</p>
-          <div className="team-status-row">
+          <div className="team-bay-strip">
             {pub.teamStatuses.map((t) => (
               <div key={t.color}
-                className={`team-status-card status-${t.status}`}
+                className={`team-bay-cell${t.claimed ? "" : " empty"}`}
                 style={{ "--bay-color": COLOR_HEX[t.color] } as React.CSSProperties}>
-                <span className="bay-dot" />
-                <span className="ts-name">{t.displayName}</span>
-                <span className="ts-status">{statusLabel(t.status)}</span>
+                <span className={`tbc-name${t.color === "yellow" ? " yellow" : ""}`}>
+                  {t.displayName}
+                </span>
+                <span className={`tbc-status${t.color === "yellow" ? " yellow" : ""}`}>
+                  {statusLabel(t.status)}
+                </span>
               </div>
             ))}
           </div>
@@ -198,12 +212,15 @@ export default function DisplayPage() {
 
       {/* ── REVEAL ── */}
       {phase === "reveal" && pub && (
-        <section className="stage-panel display-board reveal-stage" style={{ textAlign: "center" }}>
+        <section className="stage-panel display-board" style={{ textAlign: "center" }}>
           {pub.productName && <h1 className="display-product-name">{pub.productName}</h1>}
-          <div className={`reveal-price-display${revealVisible ? " visible" : ""}`}>
-            {pub.revealPaidPrice !== null
-              ? `$${Number(pub.revealPaidPrice).toFixed(2)}`
-              : "—"}
+          <div className="burst-container">
+            <WinBurst visible={revealVisible} />
+            <div className={`reveal-price-display${revealVisible ? " visible" : ""}`}>
+              {pub.revealPaidPrice !== null
+                ? `$${Number(pub.revealPaidPrice).toFixed(2)}`
+                : "—"}
+            </div>
           </div>
           {pub.pointAwards && revealVisible && (
             <div className="display-awards">
