@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { RetroStage } from "@/components/RetroStage";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { rowToPublicState, rowToSessionQuestion } from "@/lib/supabase/mappers";
 import type { PublicState, SessionQuestion } from "@/lib/supabase/types";
 
 const COLOR_NAMES = { red: "Red", blue: "Blue", yellow: "Yellow", green: "Green" };
@@ -51,10 +52,10 @@ export default function AdminPage() {
     if (!sessionId) return;
     const sb = createSupabaseBrowserClient();
     sb.from("session_public_state")
-      .select("state")
+      .select("*")
       .eq("session_id", sessionId)
       .maybeSingle()
-      .then(({ data }) => { if (data) { const s = data.state as PublicState; setPub(s); setStateVersion(s.stateVersion); } });
+      .then(({ data }) => { if (data) { const s = rowToPublicState(data); setPub(s); setStateVersion(s.stateVersion); } });
 
     const channel = sb
       .channel(`admin:${sessionId}`)
@@ -62,8 +63,8 @@ export default function AdminPage() {
         "postgres_changes",
         { event: "*", schema: "public", table: "session_public_state", filter: `session_id=eq.${sessionId}` },
         (payload) => {
-          if (payload.new) {
-            const s = (payload.new as { state: PublicState }).state;
+          if (payload.new && Object.keys(payload.new).length) {
+            const s = rowToPublicState(payload.new);
             setPub(s);
             setStateVersion(s.stateVersion);
             deadlineFiredRef.current = false;
@@ -79,7 +80,7 @@ export default function AdminPage() {
     if (!sessionId) return;
     const sb = createSupabaseBrowserClient();
     const { data } = await sb.rpc("admin_get_session_questions", { p_session_id: sessionId });
-    if (data) setQuestions(data as SessionQuestion[]);
+    if (data) setQuestions((data as unknown[]).map(rowToSessionQuestion));
   }, [sessionId]);
 
   useEffect(() => { loadQuestions(); }, [loadQuestions]);
@@ -114,10 +115,32 @@ export default function AdminPage() {
     setBusy(true);
     setMsg("");
     const sb = createSupabaseBrowserClient();
-    const { data, error } = await sb.rpc(fn, { p_session_id: sessionId, p_state_version: stateVersion, ...args });
+
+    // Always read the authoritative version right before mutating, so a
+    // missed realtime update never produces a stale-version error.
+    async function freshVersion(): Promise<number> {
+      const { data: sess } = await sb
+        .from("game_sessions")
+        .select("state_version")
+        .eq("id", sessionId)
+        .maybeSingle();
+      return Number(sess?.state_version ?? stateVersion);
+    }
+
+    let version = await freshVersion();
+    let { data, error } = await sb.rpc(fn, { p_session_id: sessionId, p_state_version: version, ...args });
+
+    // Real race (e.g. auto-close landed mid-click): refresh once and retry.
+    if (error && /stale state version/i.test(error.message)) {
+      version = await freshVersion();
+      ({ data, error } = await sb.rpc(fn, { p_session_id: sessionId, p_state_version: version, ...args }));
+    }
+
+    setStateVersion(version + 1);
     if (error) setMsg(`Error: ${error.message}`);
     else if (data?.status) setMsg(`Status: ${data.status}`);
     setBusy(false);
+    if (!error) loadQuestions();
     return data;
   }
 
@@ -385,7 +408,7 @@ export default function AdminPage() {
               <div key={q.id} className={`admin-question-row${pub?.currentQuestionId === q.id ? " current" : ""}`}>
                 <span>#{i + 1}</span>
                 <span>{q.publicNameSnapshot}</span>
-                <span>${(q.answerPaidPrice / 100).toFixed(2)} paid</span>
+                <span>${Number(q.answerPaidPrice).toFixed(2)} paid</span>
                 <span>{q.openedAt ? (q.revealedAt ? "Done" : "Open") : "Queued"}</span>
               </div>
             ))}

@@ -8,6 +8,8 @@ import { MarqueeBulbs } from "@/components/MarqueeBulbs";
 import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
+import { rowToPublicState } from "@/lib/supabase/mappers";
 import { playCue } from "@/lib/sound/synth";
 import type { PublicState, TeamColor } from "@/lib/supabase/types";
 
@@ -21,6 +23,7 @@ const COLORS: TeamColor[] = ["red", "blue", "yellow", "green"];
 
 export default function DisplayPage() {
   const { code } = useParams<{ code: string }>();
+  const { userId } = useAnonAuth();
   const [pub, setPub] = useState<PublicState | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
@@ -28,8 +31,9 @@ export default function DisplayPage() {
   const prevPhaseRef = useRef<string | null>(null);
   const [revealVisible, setRevealVisible] = useState(false);
 
-  // Look up session by code, then subscribe
+  // Look up session by code, then subscribe (requires anonymous sign-in for RLS)
   useEffect(() => {
+    if (!userId) return;
     const sb = createSupabaseBrowserClient();
     sb.from("game_sessions")
       .select("id")
@@ -40,12 +44,12 @@ export default function DisplayPage() {
         setSessionId(data.id);
         // Initial state fetch
         sb.from("session_public_state")
-          .select("state")
+          .select("*")
           .eq("session_id", data.id)
           .maybeSingle()
-          .then(({ data: s }) => { if (s) setPub(s.state as PublicState); });
+          .then(({ data: s }) => { if (s) setPub(rowToPublicState(s)); });
       });
-  }, [code]);
+  }, [code, userId]);
 
   // Subscribe once we have sessionId
   useEffect(() => {
@@ -56,7 +60,7 @@ export default function DisplayPage() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "session_public_state", filter: `session_id=eq.${sessionId}` },
-        (payload) => { if (payload.new) setPub((payload.new as { state: PublicState }).state); }
+        (payload) => { if (payload.new && Object.keys(payload.new).length) setPub(rowToPublicState(payload.new)); }
       )
       .subscribe();
     return () => { sb.removeChannel(channel); };

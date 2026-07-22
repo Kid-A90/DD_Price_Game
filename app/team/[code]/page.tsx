@@ -9,6 +9,7 @@ import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { rowToPublicState } from "@/lib/supabase/mappers";
 import { playCue } from "@/lib/sound/synth";
 import type { PublicState, ClaimedTeam, OwnSubmission, TeamColor } from "@/lib/supabase/types";
 
@@ -84,17 +85,17 @@ export default function TeamPage() {
     const sb = createSupabaseBrowserClient();
     // Initial fetch
     sb.from("session_public_state")
-      .select("state")
+      .select("*")
       .eq("session_id", team.sessionId)
       .maybeSingle()
-      .then(({ data }) => { if (data) setPub(data.state as PublicState); });
+      .then(({ data }) => { if (data) setPub(rowToPublicState(data)); });
 
     const channel = sb
       .channel(`pub:${team.sessionId}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "session_public_state", filter: `session_id=eq.${team.sessionId}` },
-        (payload) => { if (payload.new) setPub((payload.new as { state: PublicState }).state); }
+        (payload) => { if (payload.new && Object.keys(payload.new).length) setPub(rowToPublicState(payload.new)); }
       )
       .subscribe();
     return () => { sb.removeChannel(channel); };
