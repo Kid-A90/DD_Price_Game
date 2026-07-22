@@ -158,7 +158,7 @@ export default function DisplayPage() {
         <section className="stage-panel display-board" style={{ textAlign: "center" }}>
           <MarqueeBulbs count={24} animating />
           <h1 className="page-title" style={{ marginTop: "1.5rem" }}>Get Ready!</h1>
-          {pub?.roundLabel && <p className="page-lead">{pub.roundLabel}</p>}
+          {pub?.roundLabel && <p className="page-lead">{roundLabel(pub.roundLabel)}</p>}
         </section>
       )}
 
@@ -314,6 +314,14 @@ export default function DisplayPage() {
       )}
     </RetroStage>
   );
+}
+
+function roundLabel(key: string): string {
+  switch (key) {
+    case "warmup": return "Warm-Up Round — Everyday Items";
+    case "main": return "Main Round";
+    default: return key.replace(/_/g, " ");
+  }
 }
 
 function statusLabel(status: string): string {
