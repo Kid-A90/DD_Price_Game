@@ -30,6 +30,10 @@ export default function AdminPage() {
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Auto-close: fire close RPC if we detect deadline has passed
   const deadlineFiredRef = useRef(false);
+  // All-locked shortcut: questions already fast-forwarded to a 5s countdown
+  const shortcutRef = useRef<Set<string>>(new Set());
+  // Question id that should auto-reveal once it reaches question_locked
+  const autoRevealRef = useRef<string | null>(null);
 
   // ── Session lookup ──
   useEffect(() => {
@@ -104,6 +108,29 @@ export default function AdminPage() {
     return () => { if (tickRef.current) clearInterval(tickRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pub?.deadlineAt]);
+
+  // ── All teams locked → 5-second final countdown, then auto-reveal ──
+  useEffect(() => {
+    if (!pub || pub.phase !== "question_open" || !pub.currentQuestionId) return;
+    const claimed = pub.teamStatuses.filter((t) => t.claimed);
+    if (claimed.length === 0) return;
+    if (!claimed.every((t) => t.status === "locked")) return;
+    if (shortcutRef.current.has(pub.currentQuestionId)) return;
+    shortcutRef.current.add(pub.currentQuestionId);
+    autoRevealRef.current = pub.currentQuestionId;
+    rpc("admin_restart_timer", { p_seconds: 5 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pub?.teamStatuses, pub?.phase, pub?.currentQuestionId]);
+
+  useEffect(() => {
+    if (pub?.phase === "question_locked" && pub.currentQuestionId
+        && autoRevealRef.current === pub.currentQuestionId) {
+      autoRevealRef.current = null;
+      const t = setTimeout(() => rpc("admin_reveal_question", {}), 800);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pub?.phase, pub?.currentQuestionId]);
 
   async function autoClose(attempt = 0) {
     if (!sessionId) return;

@@ -199,6 +199,11 @@ export default function DisplayPage() {
           )}
           <h1 className="display-product-name">{pub.productName}</h1>
 
+          {pub.teamStatuses.some((t) => t.claimed)
+            && pub.teamStatuses.filter((t) => t.claimed).every((t) => t.status === "locked") && (
+            <p className="all-locked-banner">All teams locked in — revealing!</p>
+          )}
+
           <div className={`display-timer${secondsLeft !== null && secondsLeft <= 5 ? " urgent" : ""}`}>
             {secondsLeft !== null ? `${secondsLeft}s` : "PAUSED"}
           </div>
