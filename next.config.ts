@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
       { pathname: "/brand/**" },
       { pathname: "/ui/**" },
       { pathname: "/placeholders/**" },
-      { pathname: "/products/approved/**" }
+      { pathname: "/products/**" }
     ]
   }
 };
