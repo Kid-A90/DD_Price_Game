@@ -309,18 +309,14 @@ export default function TeamPage() {
       {phase === "question_open" && pub && (
         <section className="stage-panel product-stage">
           {pub.publicImagePath && (
-            <div className="product-pedestal">
-              <div className="product-window">
-                <Image
-                  src={pub.publicImagePath}
-                  fill
-                  style={{ objectFit: "contain" }}
-                  alt={pub.productName ?? "Product"}
-                  priority
-                />
-              </div>
-              <div className="product-pedestal-cap" />
-              <div className="product-pedestal-base" />
+            <div className="product-frame">
+              <Image
+                src={pub.publicImagePath}
+                fill
+                style={{ objectFit: "cover" }}
+                alt={pub.productName ?? "Product"}
+                priority
+              />
             </div>
           )}
           <h2 className="product-name">{pub.productName}</h2>

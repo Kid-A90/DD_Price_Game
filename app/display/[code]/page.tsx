@@ -166,18 +166,14 @@ export default function DisplayPage() {
       {phase === "question_open" && pub && (
         <section className="stage-panel display-board">
           {pub.publicImagePath && (
-            <div className="product-pedestal">
-              <div className="display-product-window">
-                <Image
-                  src={pub.publicImagePath}
-                  fill
-                  style={{ objectFit: "contain" }}
-                  alt={pub.productName ?? "Product"}
-                  priority
-                />
-              </div>
-              <div className="product-pedestal-cap" />
-              <div className="product-pedestal-base" />
+            <div className="product-frame lg">
+              <Image
+                src={pub.publicImagePath}
+                fill
+                style={{ objectFit: "cover" }}
+                alt={pub.productName ?? "Product"}
+                priority
+              />
             </div>
           )}
           <h1 className="display-product-name">{pub.productName}</h1>
