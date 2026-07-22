@@ -28,8 +28,8 @@ export default function AdminPage() {
   const [correctionReason, setCorrectionReason] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  // Auto-close: fire close RPC if we detect deadline has passed
-  const deadlineFiredRef = useRef(false);
+  // Auto-close: keep attempting the (working) manual close while expired
+  const lastCloseAttemptRef = useRef(0);
   // All-locked shortcut: questions already fast-forwarded to a 5s countdown
   const shortcutRef = useRef<Set<string>>(new Set());
   // Question id that should auto-reveal once it reaches question_locked
@@ -71,7 +71,6 @@ export default function AdminPage() {
             const s = rowToPublicState(payload.new);
             setPub(s);
             setStateVersion(s.stateVersion);
-            deadlineFiredRef.current = false;
           }
         }
       )
@@ -98,9 +97,13 @@ export default function AdminPage() {
       const ms = new Date(pub!.deadlineAt!).getTime() - Date.now();
       const s = Math.max(0, Math.ceil(ms / 1000));
       setSecondsLeft(s);
-      if (s === 0 && !deadlineFiredRef.current && pub?.phase === "question_open") {
-        deadlineFiredRef.current = true;
-        autoClose();
+      // Retry every 2.5s until the phase changes — never leave it stuck open.
+      if (s === 0 && pub?.phase === "question_open") {
+        const nowMs = Date.now();
+        if (nowMs - lastCloseAttemptRef.current > 2500) {
+          lastCloseAttemptRef.current = nowMs;
+          forceClose();
+        }
       }
     }
     tick();
@@ -131,17 +134,6 @@ export default function AdminPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pub?.phase, pub?.currentQuestionId]);
-
-  async function autoClose(attempt = 0) {
-    if (!sessionId) return;
-    const sb = createSupabaseBrowserClient();
-    const { data, error } = await sb.rpc("admin_close_question_auto", { p_session_id: sessionId });
-    const status = (data as { status?: string } | null)?.status;
-    // Client clocks can run slightly ahead of the server: retry until expired.
-    if ((error || status === "not_expired") && attempt < 5) {
-      setTimeout(() => autoClose(attempt + 1), 1200);
-    }
-  }
 
   async function rpc(fn: string, args: Record<string, unknown>) {
     if (!sessionId || busy) return;
