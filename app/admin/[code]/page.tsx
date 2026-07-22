@@ -22,7 +22,7 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
-  const [timerSecs, setTimerSecs] = useState("60");
+  const [timerSecs, setTimerSecs] = useState("25");
   const [correctionTeamId, setCorrectionTeamId] = useState("");
   const [correctionPts, setCorrectionPts] = useState("");
   const [correctionReason, setCorrectionReason] = useState("");
@@ -163,6 +163,9 @@ export default function AdminPage() {
   }
   async function pauseTimer() { await rpc("admin_pause_timer", {}); }
   async function resumeTimer() { await rpc("admin_resume_timer", {}); }
+  async function restartTimer() {
+    await rpc("admin_restart_timer", { p_seconds: parseInt(timerSecs, 10) || 25 });
+  }
   async function forceClose() {
     if (!pub?.currentQuestionId) return;
     const result = await rpc("admin_close_question", {});
@@ -278,6 +281,14 @@ export default function AdminPage() {
             <div className="control-grid">
               <button className="btn-ghost" onClick={pauseTimer} disabled={busy}>Pause Timer</button>
               <button className="btn-ghost" onClick={resumeTimer} disabled={busy}>Resume Timer</button>
+              <label className="admin-label">
+                Timer (seconds)
+                <input className="admin-input" type="number" min="5" max="600" value={timerSecs}
+                  onChange={(e) => setTimerSecs(e.target.value)} />
+              </label>
+              <button className="btn-primary" onClick={restartTimer} disabled={busy}>
+                Restart Timer ({timerSecs}s)
+              </button>
               <button className="btn-danger" onClick={forceClose} disabled={busy}>Force Close</button>
             </div>
           </div>
