@@ -3,7 +3,7 @@ import { DoorLights } from "./DoorLights";
 
 export function RetroStage({
   children,
-  label = "The Price Is Right"
+  label
 }: {
   children: React.ReactNode;
   label?: string;
@@ -20,21 +20,23 @@ export function RetroStage({
                   <div className="door-center">
                     <header className="tpir-header">
                       <Image
-                        src="/ui/tpir-logo.svg"
-                        width={140}
-                        height={87}
+                        src="/ui/tpir-logo.webp"
+                        width={595}
+                        height={672}
                         alt="The Price Is Right"
                         className="tpir-header-logo"
                         priority
                       />
-                      <span className="tpir-session-chip">{label}</span>
-                      <Image
-                        src="/brand/designs-direct-logo.png"
-                        width={92}
-                        height={47}
-                        alt="Designs Direct"
-                        className="tpir-header-dd"
-                      />
+                      <div className="tpir-header-right">
+                        {label && <span className="tpir-session-chip">{label}</span>}
+                        <Image
+                          src="/brand/designs-direct-logo.png"
+                          width={92}
+                          height={47}
+                          alt="Designs Direct"
+                          className="tpir-header-dd"
+                        />
+                      </div>
                     </header>
                     <div className="stage-main">{children}</div>
                   </div>

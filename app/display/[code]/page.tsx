@@ -97,11 +97,16 @@ export default function DisplayPage() {
 
       {/* ── LOBBY ── */}
       {phase === "lobby" && (
-        <section className="stage-panel display-board">
+        <section className="stage-panel display-board" style={{ textAlign: "center" }}>
           <MarqueeBulbs count={24} animating />
-          <h1 className="page-title" style={{ marginTop: "1.5rem" }}>
-            The Price Is Right
-          </h1>
+          <Image
+            src="/ui/tpir-logo.webp"
+            alt="The Price Is Right"
+            width={595}
+            height={672}
+            className="lobby-logo"
+            priority
+          />
           <p className="page-lead">The game starts soon. Come on down!</p>
           {pub && (
             <div className="team-bay-strip">
