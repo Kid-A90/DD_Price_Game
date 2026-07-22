@@ -28,6 +28,8 @@ export interface TeamInfo {
   claimed: boolean;
   status: TeamStatus;
   tieEligible: boolean;
+  /** Present only during the reveal phase. */
+  finalGuess?: number | null;
 }
 
 export interface LeaderboardEntry {

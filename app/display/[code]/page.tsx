@@ -7,6 +7,7 @@ import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
 import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
+import { RevealResults } from "@/components/RevealResults";
 import { ShowcaseDisplay } from "@/components/ShowcaseDisplay";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
@@ -273,21 +274,7 @@ export default function DisplayPage() {
                 : "—"}
             </div>
           </div>
-          {pub.pointAwards && revealVisible && (
-            <div className="display-awards">
-              {pub.pointAwards.map((a, i) => (
-                <div key={i} className="display-award-row"
-                  style={{ "--bay-color": COLOR_HEX[a.color] } as React.CSSProperties}>
-                  <span className="bay-dot" />
-                  <span className="da-name">
-                    {pub.teamStatuses.find((t) => t.color === a.color)?.displayName ?? a.color}
-                  </span>
-                  <span className="da-pts">+{a.points}</span>
-                  <span className="da-reason">{a.reason.replace(/_/g, " ")}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          {revealVisible && <RevealResults pub={pub} />}
         </section>
       )}
 

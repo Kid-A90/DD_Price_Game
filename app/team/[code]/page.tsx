@@ -6,6 +6,7 @@ import Image from "next/image";
 import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
 import { DoorLoading } from "@/components/DoorLoading";
+import { RevealResults } from "@/components/RevealResults";
 import { WinBurst } from "@/components/WinBurst";
 import { ShowcaseDisplay } from "@/components/ShowcaseDisplay";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
@@ -446,6 +447,7 @@ export default function TeamPage() {
             {myAwards.length === 0 && (
               <p className="page-lead" style={{ opacity: .7, marginTop: "1rem" }}>No points this round.</p>
             )}
+            <RevealResults pub={pub} />
           </section>
         );
       })()}
