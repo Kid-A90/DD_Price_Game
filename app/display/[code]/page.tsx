@@ -7,6 +7,7 @@ import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
 import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
+import { ShowcaseDisplay } from "@/components/ShowcaseDisplay";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { rowToPublicState } from "@/lib/supabase/mappers";
@@ -81,6 +82,20 @@ export default function DisplayPage() {
     if (pub.phase === "question_open") playCue("tick");
     if (pub.phase === "question_locked") playCue("lock");
   }, [pub?.phase]);
+
+  // Showcase sound cues
+  const scPhase = pub?.showcase?.phase;
+  const scRevealed = pub?.showcase?.prizes.filter((p) => p.revealed).length ?? 0;
+  const scDrawn = pub?.showcase?.assignments.length ?? 0;
+  const scWon = pub?.showcase?.won;
+  useEffect(() => { if (scRevealed > 0) playCue("reveal"); }, [scRevealed]);
+  useEffect(() => { if (scDrawn > 0) playCue("lock"); }, [scDrawn]);
+  useEffect(() => {
+    if (scPhase === "intro" || scPhase === "done") playCue("winner");
+    if (scPhase === "total") playCue("reveal");
+    if (scPhase === "result") playCue(scWon ? "winner" : "tie");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scPhase]);
 
   // Countdown
   useEffect(() => {
@@ -272,8 +287,15 @@ export default function DisplayPage() {
         </section>
       )}
 
-      {/* ── SHOWCASE / COMPLETE ── */}
-      {(phase === "showcase" || phase === "complete") && pub && (
+      {/* ── TEAM SHOWCASE ── */}
+      {phase === "showcase" && pub?.showcase && (
+        <section className="stage-panel display-board showcase-stage" style={{ textAlign: "center" }}>
+          <ShowcaseDisplay sc={pub.showcase} />
+        </section>
+      )}
+
+      {/* ── COMPLETE (or showcase state not yet loaded) ── */}
+      {(phase === "complete" || (phase === "showcase" && !pub?.showcase)) && pub && (
         <section className="stage-panel display-board" style={{ textAlign: "center" }}>
           <MarqueeBulbs count={24} animating />
           <h1 className="page-title" style={{ marginTop: "1.5rem" }}>

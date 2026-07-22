@@ -23,6 +23,7 @@ export function rowToPublicState(row: any): PublicState {
     leaderboard: row.leaderboard ?? [],
     animationCue: row.animation_cue ?? null,
     stateVersion: Number(row.state_version ?? 0),
+    showcase: row.showcase ?? null,
   };
 }
 

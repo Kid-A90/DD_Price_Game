@@ -7,6 +7,7 @@ import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
 import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
+import { ShowcaseDisplay } from "@/components/ShowcaseDisplay";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { rowToPublicState } from "@/lib/supabase/mappers";
@@ -40,12 +41,14 @@ export default function TeamPage() {
   const [sub, setSub] = useState<OwnSubmission | null>(null);
   const [inputVal, setInputVal] = useState("");
   const [benchmarkVal, setBenchmarkVal] = useState("");
+  const [showcaseBid, setShowcaseBid] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [locked, setLocked] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showcaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevPhaseRef = useRef<string | null>(null);
 
@@ -216,6 +219,30 @@ export default function TeamPage() {
       p_guess: dollars,
     });
     if (e) setError(e.message);
+  }
+
+  // ── Showcase bid (winning team only) ──
+  const saveShowcaseBid = useCallback(async (dollars: number | null, lock: boolean) => {
+    if (!team) return;
+    if (lock && (dollars === null || dollars <= 0)) { setError("Enter a valid bid."); return; }
+    setError("");
+    const sb = createSupabaseBrowserClient();
+    const { error: e } = await sb.rpc("showcase_team_bid", {
+      p_session_id: team.sessionId,
+      p_bid: dollars,
+      p_lock: lock,
+    });
+    if (e) setError(e.message);
+    else if (lock) playCue("lock");
+  }, [team]);
+
+  function handleShowcaseInput(val: string) {
+    setShowcaseBid(val);
+    if (showcaseTimerRef.current) clearTimeout(showcaseTimerRef.current);
+    showcaseTimerRef.current = setTimeout(() => {
+      const d = parseDollars(val);
+      if (d !== null) saveShowcaseBid(d, false);
+    }, 800);
   }
 
   // ── Determine if this team is tie-eligible ──
@@ -435,8 +462,60 @@ export default function TeamPage() {
         </section>
       )}
 
-      {/* ── SHOWCASE / COMPLETE ── */}
-      {(phase === "showcase" || phase === "complete") && pub && (
+      {/* ── TEAM SHOWCASE ── */}
+      {phase === "showcase" && pub?.showcase && (() => {
+        const sc = pub.showcase;
+        const mine = sc.winningColor === team.color;
+        const canBid = mine && (sc.phase === "intro" || sc.phase === "bidding");
+        if (canBid) {
+          return (
+            <section className="stage-panel" style={{ textAlign: "center" }}>
+              <h2 className="page-title" style={{ color: "var(--gold)" }}>Team Showcase</h2>
+              <p className="page-lead">
+                Guess the combined retail price of all five prizes. Closest without going over wins!
+              </p>
+              <div className="price-entry">
+                <label className="price-label">Your Showcase Bid — all five prizes combined</label>
+                <div className="price-row">
+                  <span className="currency">$</span>
+                  <input
+                    className="price-input"
+                    type="number"
+                    inputMode="decimal"
+                    min="0"
+                    step="0.01"
+                    value={showcaseBid}
+                    onChange={(e) => handleShowcaseInput(e.target.value)}
+                    placeholder="0.00"
+                    aria-label="Showcase bid in dollars"
+                    disabled={sc.phase !== "bidding"}
+                  />
+                </div>
+                {sc.phase === "intro" && (
+                  <p className="page-lead" style={{ opacity: 0.7 }}>Look at the prizes — bidding opens when the host is ready…</p>
+                )}
+                {error && <p className="error-msg">{error}</p>}
+                {sc.phase === "bidding" && (
+                  <button
+                    className="btn-primary lock-btn"
+                    onClick={() => saveShowcaseBid(parseDollars(showcaseBid), true)}
+                  >
+                    Lock In Bid
+                  </button>
+                )}
+              </div>
+            </section>
+          );
+        }
+        return (
+          <section className="stage-panel" style={{ textAlign: "center" }}>
+            <ShowcaseDisplay sc={sc} compact />
+          </section>
+        );
+      })()}
+
+      {/* ── COMPLETE ── */}
+      {(phase === "complete" || (phase === "showcase" && !pub?.showcase)) && pub && (
         <section className="stage-panel" style={{ textAlign: "center" }}>
           <MarqueeBulbs count={24} animating />
           <h2 className="page-title" style={{ marginTop: "1.5rem" }}>

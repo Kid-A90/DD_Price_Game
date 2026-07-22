@@ -330,10 +330,81 @@ export default function AdminPage() {
             <h2 className="admin-section-title">Leaderboard</h2>
             <div className="control-grid">
               <button className="btn-primary" onClick={loadQuestion} disabled={busy}>Load Next Question →</button>
-              <button className="btn-ghost" onClick={advance} disabled={busy}>Advance (showcase/complete)</button>
+              <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "start" })} disabled={busy}>
+                Start Team Showcase ★
+              </button>
             </div>
           </div>
         )}
+
+        {/* Team Showcase host controls */}
+        {phase === "showcase" && (() => {
+          const sc = pub?.showcase;
+          if (!sc) return <div className="control-group"><p className="admin-hint">Loading showcase…</p></div>;
+          const revealed = sc.prizes.filter((p) => p.revealed).length;
+          const totalPrizes = sc.prizes.length;
+          const drawn = sc.assignments.length;
+          const totalDraws = Math.min(sc.players.length, totalPrizes);
+          return (
+            <div className="control-group">
+              <h2 className="admin-section-title">Team Showcase</h2>
+              <p className="admin-hint">
+                Winner: {sc.winningTeamName} · stage: {sc.phase}
+                {sc.bid !== null ? ` · bid locked: $${sc.bid.toFixed(2)}` : sc.bidEntered ? " · bid entered (not locked)" : " · no bid yet"}
+                {sc.actualTotal !== null ? ` · actual total: $${sc.actualTotal.toFixed(2)}` : ""}
+              </p>
+              <div className="control-grid">
+                {sc.phase === "intro" && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "open_bidding" })} disabled={busy}>
+                    Open Bidding
+                  </button>
+                )}
+                {sc.phase === "bidding" && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "lock_bid" })} disabled={busy}>
+                    Lock Bid
+                  </button>
+                )}
+                {(sc.phase === "locked" || sc.phase === "revealing") && revealed < totalPrizes && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "reveal_next" })} disabled={busy}>
+                    Reveal Prize {revealed + 1} of {totalPrizes}
+                  </button>
+                )}
+                {sc.phase === "revealing" && revealed >= totalPrizes && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "reveal_total" })} disabled={busy}>
+                    Reveal Showcase Total
+                  </button>
+                )}
+                {sc.phase === "total" && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "result" })} disabled={busy}>
+                    Show Verdict ★
+                  </button>
+                )}
+                {sc.phase === "result" && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "start_drawing" })} disabled={busy}>
+                    Start Prize Drawing
+                  </button>
+                )}
+                {sc.phase === "drawing" && drawn < totalDraws && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "draw_next" })} disabled={busy}>
+                    Draw Prize {drawn + 1} of {totalDraws}
+                  </button>
+                )}
+                {sc.phase === "drawing" && drawn >= totalDraws && (
+                  <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "finish" })} disabled={busy}>
+                    Show Final Screen
+                  </button>
+                )}
+                <button className="btn-danger" onClick={() => {
+                  if (window.confirm("Reset the showcase? Bid, reveals, and drawing are cleared.")) {
+                    rpc("showcase_admin", { p_action: "reset" });
+                  }
+                }} disabled={busy}>
+                  Reset Showcase
+                </button>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Teams */}
         <div className="control-group" style={{ marginTop: "2rem" }}>

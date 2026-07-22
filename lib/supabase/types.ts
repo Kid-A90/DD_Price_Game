@@ -44,6 +44,46 @@ export interface PointAward {
   reason: string;
 }
 
+export type ShowcasePhase =
+  | "intro"
+  | "bidding"
+  | "locked"
+  | "revealing"
+  | "total"
+  | "result"
+  | "drawing"
+  | "done";
+
+export interface ShowcasePrize {
+  key: string;
+  name: string;
+  image: string | null;
+  revealed: boolean;
+  price: number | null;
+}
+
+export interface ShowcaseAssignment {
+  player: string;
+  prizeKey: string;
+  prizeName: string;
+  prizeImage: string | null;
+}
+
+export interface ShowcasePublic {
+  phase: ShowcasePhase;
+  winningColor: TeamColor;
+  winningTeamName: string;
+  players: string[];
+  prizes: ShowcasePrize[];
+  runningTotal: number;
+  actualTotal: number | null;
+  bid: number | null;
+  bidEntered: boolean;
+  won: boolean | null;
+  assignments: ShowcaseAssignment[];
+  bonusPrizes: { name: string; image: string | null }[];
+}
+
 export interface PublicState {
   sessionId: string;
   code: string;
@@ -61,6 +101,7 @@ export interface PublicState {
   leaderboard: LeaderboardEntry[];
   animationCue: string | null;
   stateVersion: number;
+  showcase: ShowcasePublic | null;
 }
 
 export interface SessionQuestion {
