@@ -105,10 +105,15 @@ export default function AdminPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pub?.deadlineAt]);
 
-  async function autoClose() {
+  async function autoClose(attempt = 0) {
     if (!sessionId) return;
     const sb = createSupabaseBrowserClient();
-    await sb.rpc("admin_close_question_auto", { p_session_id: sessionId });
+    const { data, error } = await sb.rpc("admin_close_question_auto", { p_session_id: sessionId });
+    const status = (data as { status?: string } | null)?.status;
+    // Client clocks can run slightly ahead of the server: retry until expired.
+    if ((error || status === "not_expired") && attempt < 5) {
+      setTimeout(() => autoClose(attempt + 1), 1200);
+    }
   }
 
   async function rpc(fn: string, args: Record<string, unknown>) {
@@ -156,33 +161,23 @@ export default function AdminPage() {
     if (!pub?.currentQuestionId) { setMsg("Load a question first."); return; }
     await rpc("admin_open_question", { p_override_seconds: parseInt(timerSecs, 10) });
   }
-  async function pauseTimer() { await rpc("admin_pause_timer", { p_question_id: pub?.currentQuestionId }); }
-  async function resumeTimer() { await rpc("admin_resume_timer", { p_question_id: pub?.currentQuestionId }); }
+  async function pauseTimer() { await rpc("admin_pause_timer", {}); }
+  async function resumeTimer() { await rpc("admin_resume_timer", {}); }
   async function forceClose() {
     if (!pub?.currentQuestionId) return;
-    const result = await rpc("admin_close_question", { p_question_id: pub.currentQuestionId });
+    const result = await rpc("admin_close_question", {});
     if (result?.status === "tie_required") setMsg(`Tie-break required for: ${result.tieGroups?.map((g: { colors: string[] }) => g.colors.join(", ")).join(" | ")}`);
   }
   async function reveal() {
     if (!pub?.currentQuestionId) return;
-    await rpc("admin_reveal_question", { p_question_id: pub.currentQuestionId });
+    await rpc("admin_reveal_question", {});
   }
   async function advance() {
     const defaultNext = pub?.phase === "reveal" ? "leaderboard" : "question_ready";
     await rpc("admin_advance", { p_target: defaultNext });
   }
-  async function closeTieBreak() {
-    await rpc("admin_close_tie_break", { p_question_id: pub?.currentQuestionId });
-  }
-  async function setEqualPoints() {
-    if (!pub?.currentQuestionId) return;
-    const tied = pub.tieBreakEligibleColors;
-    const tiedTeamIds = pub.teamStatuses
-      .filter((t) => tied.includes(t.color))
-      .map((t) => (t as unknown as { teamId: string }).teamId)
-      .filter(Boolean);
-    await rpc("admin_set_equal_points", { p_question_id: pub.currentQuestionId, p_team_ids: tiedTeamIds });
-  }
+  async function closeTieBreak() { await rpc("admin_close_tie_break", {}); }
+  async function setEqualPoints() { await rpc("admin_set_equal_points", {}); }
   async function releaseTeam(color: string) {
     if (!sessionId) return;
     setBusy(true);

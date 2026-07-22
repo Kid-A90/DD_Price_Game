@@ -26,6 +26,7 @@ export default function DisplayPage() {
   const { code } = useParams<{ code: string }>();
   const { userId } = useAnonAuth();
   const [pub, setPub] = useState<PublicState | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -41,7 +42,8 @@ export default function DisplayPage() {
       .eq("code", code.toUpperCase())
       .maybeSingle()
       .then(({ data }) => {
-        if (!data) return;
+        if (!data) { setNotFound(true); return; }
+        setNotFound(false);
         setSessionId(data.id);
         // Initial state fetch
         sb.from("session_public_state")
@@ -111,6 +113,25 @@ export default function DisplayPage() {
   }, [pub?.deadlineAt]);
 
   const phase = pub?.phase ?? "lobby";
+
+  if (notFound) {
+    return (
+      <RetroStage label="Public Display">
+        <section className="stage-panel" style={{ textAlign: "center" }}>
+          <h1 className="page-title">No Game Found</h1>
+          <p className="page-lead">
+            There is no session with code <strong>{code.toUpperCase()}</strong>.
+            Check the code with your host.
+          </p>
+          <div className="actions" style={{ justifyContent: "center" }}>
+            <a className="btn-primary" href="/display" style={{ display: "inline-flex", alignItems: "center" }}>
+              Enter a Different Code
+            </a>
+          </div>
+        </section>
+      </RetroStage>
+    );
+  }
 
   if (!pub) {
     return <DoorLoading message="Stand by…" />;

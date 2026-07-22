@@ -19,8 +19,8 @@ export default function HomePage() {
         </p>
         <div className="route-grid">
           <RouteCard href="/join" className="team" title="Team Laptop">Choose a team color, add names, and enter guesses.</RouteCard>
-          <RouteCard href="/display/DEMO" className="display" title="Public Display">Project the product, timer, lock status, reveals, and scores.</RouteCard>
-          <RouteCard href="/admin/DEMO" className="admin" title="Admin Control">Create the session, open questions, reveal, and advance.</RouteCard>
+          <RouteCard href="/display" className="display" title="Public Display">Project the product, timer, lock status, reveals, and scores.</RouteCard>
+          <RouteCard href="/admin" className="admin" title="Admin Control">Create the session, open questions, reveal, and advance.</RouteCard>
         </div>
       </section>
     </RetroStage>
