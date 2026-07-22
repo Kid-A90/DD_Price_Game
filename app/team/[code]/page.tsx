@@ -59,27 +59,36 @@ export default function TeamPage() {
     if (stored) {
       try { setTeam(JSON.parse(stored)); } catch { /* ignore */ }
     }
-    // Also try to fetch from DB in case localStorage is stale
+    // DB recovery, scoped to THIS session's code — a device may own teams
+    // in older sessions too, which must not shadow this one.
     const sb = createSupabaseBrowserClient();
-    sb.from("teams")
-      .select("id, session_id, color, display_name, player_names")
-      .eq("owner_user_id", userId)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          const t: ClaimedTeam = {
-            teamId: data.id,
-            sessionId: data.session_id,
-            color: data.color as TeamColor,
-            displayName: data.display_name ?? data.color,
-            playerNames: data.player_names ?? [],
-          };
-          setTeam(t);
-          localStorage.setItem(`dd_team_${code.toUpperCase()}`, JSON.stringify(t));
-        } else if (!stored) {
-          router.replace(`/join`);
-        }
-      });
+    (async () => {
+      const { data: sess } = await sb
+        .from("game_sessions")
+        .select("id")
+        .eq("code", code.toUpperCase())
+        .maybeSingle();
+      if (!sess) { if (!stored) router.replace("/join"); return; }
+      const { data } = await sb
+        .from("teams")
+        .select("id, session_id, color, display_name, player_names")
+        .eq("session_id", sess.id)
+        .eq("owner_user_id", userId)
+        .maybeSingle();
+      if (data) {
+        const t: ClaimedTeam = {
+          teamId: data.id,
+          sessionId: data.session_id,
+          color: data.color as TeamColor,
+          displayName: data.display_name ?? data.color,
+          playerNames: data.player_names ?? [],
+        };
+        setTeam(t);
+        localStorage.setItem(`dd_team_${code.toUpperCase()}`, JSON.stringify(t));
+      } else if (!stored) {
+        router.replace(`/join`);
+      }
+    })();
   }, [userId, code, router]);
 
   // ── Subscribe to public state ──

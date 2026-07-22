@@ -109,7 +109,7 @@ export default function JoinPage() {
     setSubmitting(true);
     setError("");
     const sb = createSupabaseBrowserClient();
-    const { error: rpcErr } = await sb.rpc("claim_team", {
+    const { data, error: rpcErr } = await sb.rpc("claim_team", {
       p_session_code: code.trim().toUpperCase(),
       p_color: selectedColor,
       p_player_names: nameList,
@@ -121,7 +121,19 @@ export default function JoinPage() {
       setSubmitting(false);
       return;
     }
-    router.push(`/team/${code.trim().toUpperCase()}`);
+    // Persist the claim immediately so the team page never has to guess.
+    const upper = code.trim().toUpperCase();
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row) {
+      localStorage.setItem(`dd_team_${upper}`, JSON.stringify({
+        teamId: row.team_id,
+        sessionId: row.session_id,
+        color: row.color,
+        displayName: row.display_name ?? row.color,
+        playerNames: row.player_names ?? [],
+      }));
+    }
+    router.push(`/team/${upper}`);
   }
 
   if (authLoading) {
