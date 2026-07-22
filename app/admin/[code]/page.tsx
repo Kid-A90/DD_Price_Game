@@ -79,7 +79,8 @@ export default function AdminPage() {
   const loadQuestions = useCallback(async () => {
     if (!sessionId) return;
     const sb = createSupabaseBrowserClient();
-    const { data } = await sb.rpc("admin_get_session_questions", { p_session_id: sessionId });
+    const { data, error } = await sb.rpc("admin_get_session_questions", { p_session_id: sessionId });
+    if (error) setMsg(`Error loading lineup: ${error.message}`);
     if (data) setQuestions((data as unknown[]).map(rowToSessionQuestion));
   }, [sessionId]);
 
