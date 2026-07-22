@@ -47,6 +47,7 @@ export interface PointAward {
 }
 
 export type ShowcasePhase =
+  | "pto"
   | "intro"
   | "bidding"
   | "locked"
@@ -64,6 +65,13 @@ export interface ShowcasePrize {
   price: number | null;
 }
 
+export interface ShowcaseTeamBid {
+  color: TeamColor;
+  displayName: string;
+  locked: boolean;
+  bid: number | null;
+}
+
 export interface ShowcaseAssignment {
   player: string;
   prizeKey: string;
@@ -73,15 +81,16 @@ export interface ShowcaseAssignment {
 
 export interface ShowcasePublic {
   phase: ShowcasePhase;
-  winningColor: TeamColor;
-  winningTeamName: string;
+  gameWinnerColor: TeamColor;
+  gameWinnerName: string;
+  winnerColor: TeamColor | null;
+  winnerName: string | null;
+  /** Showcase-winning team's roster (drawing pool). */
   players: string[];
   prizes: ShowcasePrize[];
   runningTotal: number;
   actualTotal: number | null;
-  bid: number | null;
-  bidEntered: boolean;
-  won: boolean | null;
+  teamBids: ShowcaseTeamBid[];
   assignments: ShowcaseAssignment[];
   bonusPrizes: { name: string; image: string | null }[];
 }

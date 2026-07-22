@@ -472,14 +472,14 @@ export default function TeamPage() {
       {/* ── TEAM SHOWCASE ── */}
       {phase === "showcase" && pub?.showcase && (() => {
         const sc = pub.showcase;
-        const mine = sc.winningColor === team.color;
-        const canBid = mine && (sc.phase === "intro" || sc.phase === "bidding");
+        const myBid = sc.teamBids.find((b) => b.color === team.color);
+        const canBid = sc.phase === "bidding" && !!myBid && !myBid.locked;
         if (canBid) {
           return (
             <section className="stage-panel" style={{ textAlign: "center" }}>
               <h2 className="page-title" style={{ color: "var(--gold)" }}>Team Showcase</h2>
               <p className="page-lead">
-                Guess the combined retail price of all five prizes. Closest without going over wins!
+                Bid the combined retail price of all five prizes. Closest without going over wins the package!
               </p>
               <div className="price-entry">
                 <label className="price-label">Your Showcase Bid — all five prizes combined</label>
@@ -495,27 +495,27 @@ export default function TeamPage() {
                     onChange={(e) => handleShowcaseInput(e.target.value)}
                     placeholder="0.00"
                     aria-label="Showcase bid in dollars"
-                    disabled={sc.phase !== "bidding"}
                   />
                 </div>
-                {sc.phase === "intro" && (
-                  <p className="page-lead" style={{ opacity: 0.7 }}>Look at the prizes — bidding opens when the host is ready…</p>
-                )}
                 {error && <p className="error-msg">{error}</p>}
-                {sc.phase === "bidding" && (
-                  <button
-                    className="btn-primary lock-btn"
-                    onClick={() => saveShowcaseBid(parseDollars(showcaseBid), true)}
-                  >
-                    Lock In Bid
-                  </button>
-                )}
+                <button
+                  className="btn-primary lock-btn"
+                  onClick={() => saveShowcaseBid(parseDollars(showcaseBid), true)}
+                >
+                  Lock In Bid
+                </button>
+                <p className="save-indicator">No timer — take your time, then lock it in.</p>
               </div>
             </section>
           );
         }
         return (
           <section className="stage-panel" style={{ textAlign: "center" }}>
+            {sc.phase === "bidding" && myBid?.locked && (
+              <p className="page-lead" style={{ marginBottom: "1rem" }}>
+                Bid locked! Waiting for the other teams…
+              </p>
+            )}
             <ShowcaseDisplay sc={sc} compact />
           </section>
         );

@@ -90,13 +90,11 @@ export default function DisplayPage() {
   const scPhase = pub?.showcase?.phase;
   const scRevealed = pub?.showcase?.prizes.filter((p) => p.revealed).length ?? 0;
   const scDrawn = pub?.showcase?.assignments.length ?? 0;
-  const scWon = pub?.showcase?.won;
   useEffect(() => { if (scRevealed > 0) playCue("reveal"); }, [scRevealed]);
-  useEffect(() => { if (scDrawn > 0) playCue("lock"); }, [scDrawn]);
+  useEffect(() => { if (scDrawn > 0) playCue("winner"); }, [scDrawn]);
   useEffect(() => {
-    if (scPhase === "intro" || scPhase === "done") playCue("winner");
-    if (scPhase === "total") playCue("reveal");
-    if (scPhase === "result") playCue(scWon ? "winner" : "tie");
+    if (scPhase === "pto" || scPhase === "result" || scPhase === "done") playCue("winner");
+    if (scPhase === "intro" || scPhase === "total") playCue("reveal");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scPhase]);
 

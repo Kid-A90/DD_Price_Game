@@ -1001,6 +1001,102 @@ a { color: inherit; text-decoration: none; }
 }
 .product-frame.lg { width: min(540px, 88%); }
 
+/* ── DOOR REVEAL — two stage doors slide open ───────────────────────────── */
+.door-reveal {
+  position: relative;
+  width: 100%;
+  min-height: clamp(280px, 42vh, 440px);
+  border: 8px solid var(--show-black);
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,240,180,.5), transparent 65%),
+    var(--paper);
+}
+.dr-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1;
+}
+.dr-burst { width: 100%; height: 100%; }
+.dr-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  z-index: 2;
+}
+.dr-label {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(18px, 2.4vw, 30px);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  background: var(--bay-color, var(--show-blue));
+  color: white;
+  border: 5px solid var(--show-black);
+  border-radius: 12px;
+  padding: 6px 18px;
+  box-shadow: 5px 5px 0 var(--show-black);
+}
+.dr-title {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(38px, 6.5vw, 84px);
+  line-height: .95;
+  text-transform: uppercase;
+  color: var(--show-red);
+  -webkit-text-stroke: 3px var(--show-black);
+  text-shadow: 6px 6px 0 var(--show-yellow);
+}
+.dr-subtitle { font-size: clamp(15px, 1.9vw, 22px); font-weight: 850; max-width: 46ch; }
+.dr-panel {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50.6%;
+  z-index: 3;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 3px, transparent 3px 26px),
+    linear-gradient(180deg, #a31515 0%, var(--door-maroon) 55%, #6d0b0b 100%);
+  border: 4px solid var(--show-black);
+  display: flex;
+  align-items: center;
+  transition: transform 1.5s cubic-bezier(.7, 0, .3, 1) .1s;
+}
+.dr-panel.left  { left: 0; justify-content: flex-end; }
+.dr-panel.right { right: 0; justify-content: flex-start; }
+.dr-handle {
+  width: 12px; height: 34%;
+  margin: 0 10px;
+  background: linear-gradient(180deg, #ffe083, #c9962b);
+  border: 3px solid var(--show-black);
+  border-radius: 8px;
+}
+.door-reveal.open .dr-panel.left  { transform: translateX(-103%); }
+.door-reveal.open .dr-panel.right { transform: translateX(103%); }
+
+/* Result bid comparison under the winner doors */
+.showcase-bid-compare {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-weight: 850;
+  font-size: clamp(15px, 1.8vw, 21px);
+}
+.sbc-total {
+  font-family: var(--font-price, Impact, monospace);
+  font-weight: 900;
+  font-size: clamp(22px, 3vw, 34px);
+  color: var(--show-green);
+}
+.sbc-line { display: inline-flex; align-items: center; gap: 8px; }
+.drawing-img.dim { opacity: .5; filter: grayscale(.4); }
+
 /* ══ TEAM SHOWCASE ═════════════════════════════════════════════════════════ */
 .showcase-title {
   margin: 0;
