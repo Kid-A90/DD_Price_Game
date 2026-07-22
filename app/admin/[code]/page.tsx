@@ -324,15 +324,27 @@ export default function AdminPage() {
         )}
 
         {/* Tie-break */}
-        {(phase === "tie_break_open" || phase === "tie_break_locked") && (
+        {phase === "tie_break_open" && (
           <div className="control-group">
-            <h2 className="admin-section-title">Tie-Break</h2>
+            <h2 className="admin-section-title">Tie-Break Open</h2>
             <p className="admin-hint">
-              Tied: {pub?.tieBreakEligibleColors.map((c) => COLOR_NAMES[c]).join(", ")}
+              Tied: {pub?.tieBreakEligibleColors.map((c) => COLOR_NAMES[c]).join(", ")} —
+              wait for their average-cost guesses, then score.
             </p>
             <div className="control-grid">
               <button className="btn-primary" onClick={closeTieBreak} disabled={busy}>Score Benchmark Guesses</button>
-              <button className="btn-ghost" onClick={setEqualPoints} disabled={busy}>Award Equal Points</button>
+              <button className="btn-ghost" onClick={setEqualPoints} disabled={busy}>
+                Give Up: Award Equal Points
+              </button>
+            </div>
+          </div>
+        )}
+        {phase === "tie_break_locked" && (
+          <div className="control-group">
+            <h2 className="admin-section-title">Tie-Break Scored</h2>
+            <p className="admin-hint">Points are settled. Reveal to show the room.</p>
+            <div className="control-grid">
+              <button className="btn-primary" onClick={reveal} disabled={busy}>Reveal Paid Price</button>
             </div>
           </div>
         )}
@@ -351,17 +363,25 @@ export default function AdminPage() {
         )}
 
         {/* Leaderboard */}
-        {phase === "leaderboard" && (
-          <div className="control-group">
-            <h2 className="admin-section-title">Leaderboard</h2>
-            <div className="control-grid">
-              <button className="btn-primary" onClick={loadQuestion} disabled={busy}>Load Next Question →</button>
-              <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "start" })} disabled={busy}>
-                Start Team Showcase ★
-              </button>
+        {phase === "leaderboard" && (() => {
+          const hasNext = questions.some((q) => !q.openedAt);
+          return (
+            <div className="control-group">
+              <h2 className="admin-section-title">Leaderboard</h2>
+              {!hasNext && (
+                <p className="admin-hint">All questions played — time for the finale!</p>
+              )}
+              <div className="control-grid">
+                {hasNext && (
+                  <button className="btn-primary" onClick={loadQuestion} disabled={busy}>Load Next Question →</button>
+                )}
+                <button className="btn-primary" onClick={() => rpc("showcase_admin", { p_action: "start" })} disabled={busy}>
+                  Start Team Showcase ★
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Team Showcase host controls */}
         {phase === "showcase" && (() => {
