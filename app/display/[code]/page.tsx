@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
+import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { playCue } from "@/lib/sound/synth";
@@ -91,6 +92,10 @@ export default function DisplayPage() {
   }, [pub?.deadlineAt]);
 
   const phase = pub?.phase ?? "lobby";
+
+  if (!pub) {
+    return <DoorLoading message="Stand by…" />;
+  }
 
   return (
     <RetroStage label={`Public Display · ${code.toUpperCase()}`}>

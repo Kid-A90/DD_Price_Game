@@ -907,6 +907,28 @@ a { color: inherit; text-decoration: none; }
 }
 .tpir-header-dd { height: clamp(28px, 3.4vw, 42px); width: auto; }
 
+/* Closed-door loading screen: logo centered on the white panel */
+.door-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 28px;
+}
+.door-loading-logo { width: min(440px, 62%); height: auto; }
+.door-loading-msg {
+  margin: 0;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(18px, 2.4vw, 28px);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--show-red);
+  animation: loading-blink 1.2s steps(2, end) infinite;
+}
+@keyframes loading-blink { 50% { opacity: .3; } }
+
 @media (max-width: 700px) {
   :root { --maroon-pad: 18px; --thin-ring: 5px; --door-dot: 6px; }
   .tpir-door { padding: 6px; }

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { RetroStage } from "@/components/RetroStage";
 import { MarqueeBulbs } from "@/components/MarqueeBulbs";
+import { DoorLoading } from "@/components/DoorLoading";
 import { WinBurst } from "@/components/WinBurst";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -220,14 +221,7 @@ export default function TeamPage() {
   const isTieEligible = pub?.tieBreakEligibleColors.includes(team?.color ?? "" as TeamColor) ?? false;
 
   if (authLoading || !team) {
-    return (
-      <RetroStage label="Loading…">
-        <div className="stage-panel" style={{ textAlign: "center", padding: "3rem" }}>
-          <MarqueeBulbs count={16} />
-          <p className="page-lead" style={{ marginTop: "1.5rem" }}>Connecting…</p>
-        </div>
-      </RetroStage>
-    );
+    return <DoorLoading message="Connecting…" />;
   }
 
   const teamColor = COLOR_HEX[team.color];

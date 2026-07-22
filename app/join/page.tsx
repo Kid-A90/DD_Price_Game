@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RetroStage } from "@/components/RetroStage";
-import { MarqueeBulbs } from "@/components/MarqueeBulbs";
+import { DoorLoading } from "@/components/DoorLoading";
 import { useAnonAuth } from "@/lib/supabase/useAnonAuth";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { TeamColor } from "@/lib/supabase/types";
@@ -125,14 +125,7 @@ export default function JoinPage() {
   }
 
   if (authLoading) {
-    return (
-      <RetroStage label="Loading...">
-        <div className="stage-panel" style={{ textAlign: "center", padding: "3rem" }}>
-          <MarqueeBulbs count={16} />
-          <p className="page-lead" style={{ marginTop: "1.5rem" }}>Setting up your device…</p>
-        </div>
-      </RetroStage>
-    );
+    return <DoorLoading message="Setting up your device…" />;
   }
 
   return (
